@@ -1,6 +1,7 @@
 /MANIFEST
 /build
 /dist
+/pyGuifiAPI.egg-info
 
 *.pyc
 *~
