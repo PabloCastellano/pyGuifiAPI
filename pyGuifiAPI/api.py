@@ -666,6 +666,13 @@ class GuifiAPI(object):
 
     def getModels(self, type=None, fid=None, supported=None):
         data = {'command': 'guifi.misc.model'}
+        if type:
+            data['type'] = type
+        if fid:
+            data['fid'] = fid
+        if supported:
+            data['supported'] = supported
+
         params = urllib.urlencode(data)
         (codenum, response) = self.sendRequest(params)
 
@@ -686,7 +693,7 @@ class GuifiAPI(object):
             raise GuifiApiError(response['str'], response['code'], extra)
 
     def getFirmwares(self, model_id=None):
-        data = {'command': 'guifi.misc.firmware'}
+        data = {'command': 'guifi.misc.firmware', 'model_id': model_id}
         params = urllib.urlencode(data)
         (codenum, response) = self.sendRequest(params)
 
