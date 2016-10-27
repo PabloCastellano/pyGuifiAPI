@@ -2,14 +2,15 @@
 import sys
 sys.path.append('..')
 
-from api import *
+from api import GuifiAPI
 
 #No authentication needed
-g = GuifiAPI(secure=SECURE)
+g = GuifiAPI()
 
-protocols = g.getProtocols()
+if __name__ == "__main__":
+    protocols = g.getProtocols()
 
-print('Total protocols: {}'.format(len(protocols)))
-print('Title\tDescription')
-for protocol in protocols:
-    print('{}\t{}'.format(protocol['title'], protocol['description']))
+    print('Total protocols: {}'.format(len(protocols)))
+    print('Title\tDescription')
+    for protocol in protocols:
+        print('{}\t{}'.format(protocol['title'], protocol['description']))
