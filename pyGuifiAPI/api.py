@@ -400,19 +400,19 @@ class GuifiAPI(object):
             data['graph_server'] = graph_server
 
         if rtype == 'radio':
-            if model_id is None or firmware is None:
-                raise ValueError
+            if None in (model_id, firmware):
+                raise ValueError("If rtype=='radio' you must specify model_id and firmware too")
             data['model_id'] = model_id
             data['firmware'] = firmware
         elif rtype == 'adsl':
-            if download is None or upload is None or mrtg_index is None:
-                raise ValueError
+            if None in (download, upload, mrtg_index):
+                raise ValueError("If rtype=='adsl' you must specify download, upload and mrtg_index too")
             data['download'] = download
             data['upload'] = upload
             data['mrtg_index'] = mrtg_index
         elif rtype == 'generic':
             if mrtg_index is None:
-                raise ValueError
+                raise ValueError("If rtype=='generic' you must specify mrtg_index too")
             data['mrtg_index'] = mrtg_index
 
         params = urllib.urlencode(data)
@@ -466,7 +466,7 @@ class GuifiAPI(object):
         (codenum, response) = self.sendRequest(params)
 
         if codenum == ANSWER_GOOD:
-            pass
+            print('Device {id} successfully updated'.format(id=did))
         else:
             extra = response.get('extra', None)
             raise GuifiApiError(response['str'], response['code'], extra)
@@ -546,7 +546,7 @@ class GuifiAPI(object):
         (codenum, response) = self.sendRequest(params)
 
         if codenum == ANSWER_GOOD:
-            pass
+            print('Radio {id}/{radiodev} successfully updated'.format(id=did, radiodev=radiodev))
         else:
             extra = response.get('extra', None)
             raise GuifiApiError(response['str'], response['code'], extra)
@@ -644,7 +644,7 @@ class GuifiAPI(object):
         (codenum, response) = self.sendRequest(params)
 
         if codenum == ANSWER_GOOD:
-            pass
+            print('Link {id} succesfully updated'.format(id=lid))
         else:
             extra = response.get('extra', None)
             raise GuifiApiError(response['str'], response['code'], extra)
