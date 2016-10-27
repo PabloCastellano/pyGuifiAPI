@@ -36,6 +36,6 @@ CODE_ERROR_NOT_ALLOWED_STR = 'Request is not valid: operation is not allowed'
 CODE_ERROR_NOT_FOUND = 500
 CODE_ERROR_NOT_FOUND_STR = 'Request could not be completed. The object was not found'
 CODE_ERROR_FORBIDDEN = 501
-CODE_ERROR_FORBIDDEN_STR = 'You don\'t have the required permissions'
+CODE_ERROR_FORBIDDEN_STR = "You don't have the required permissions"
 CODE_ERROR_INVALID_TOKEN = 502
 CODE_ERROR_INVALID_TOKEN_STR = 'The given Auth token is invalid'
