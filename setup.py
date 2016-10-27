@@ -27,7 +27,7 @@ setup(
     download_url='https://github.com/PabloCastellano/pyGuifiAPI/archive/master.zip',
     keywords=['free networks', 'guifi.net', 'API'],
     license='GPLv3+',
-    data_files=[('', ['LICENSE.txt'])],
+    data_files=[('', ['CHANGES.md', 'LICENSE.txt', 'README.md'])],
     include_package_data=True,
     zip_safe=False,
     classifiers=[
