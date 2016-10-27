@@ -18,15 +18,20 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from urllib2 import Request, urlopen, URLError
-# Warning: HTTPS requests do not do any verification of the server’s certificate.
-# Currently urllib2 does not support fetching of https locations through a proxy. This can be a problem.
-# http://www.voidspace.org.uk/python/articles/urllib2.shtml
+try:
+    from urllib.request import Request, urlopen, URLError
+    from urllib.parse import urlencode
+except ImportError:
+    # Python 2
+    from urllib2 import Request, urlopen, URLError
+    from urllib import urlencode
+    # Warning: HTTPS requests do not do any verification of the server’s certificate.
+    # Currently urllib2 does not support fetching of https locations through a proxy. This can be a problem.
+    # http://www.voidspace.org.uk/python/articles/urllib2.shtml
 
 from error import GuifiApiError
 from constants import *
 
-import urllib
 import json
 
 
@@ -95,6 +100,8 @@ class GuifiAPI(object):
             response = urlopen(req)
             #j = json.load(response)
             r = response.read()
+            if isinstance(r, bytes):
+                r = r.decode('utf8')
             j = json.loads(r)
             print(r)
         except URLError as e:
@@ -161,8 +168,8 @@ class GuifiAPI(object):
         # Note 1: the command is not specified in the response (!!)
         # Note 2: it works well in firefox
         # A workaround fix is also using the method parameter which is added to the end in the dict structure
-        #data = urllib.urlencode({'command':'guifi.auth.login', 'username':self.username, 'password':self.passwd})
-        data = urllib.urlencode({'command': 'guifi.auth.login', 'username': self.username, 'password': self.passwd, 'method': 'password'})
+        #data = urlencode({'command':'guifi.auth.login', 'username':self.username, 'password':self.passwd})
+        data = urlencode({'command': 'guifi.auth.login', 'username': self.username, 'password': self.passwd, 'method': 'password'})
 
         try:
             (codenum, response) = self.sendRequest(data)
@@ -210,7 +217,7 @@ class GuifiAPI(object):
         if status is not 'Planned':
             data['status'] = status
 
-        params = urllib.urlencode(data)
+        params = urlencode(data)
         (codenum, response) = self.sendRequest(params)
 
         if codenum == ANSWER_GOOD:
@@ -268,7 +275,7 @@ class GuifiAPI(object):
         if status:
             data['status_flag'] = status
 
-        params = urllib.urlencode(data)
+        params = urlencode(data)
         (codenum, response) = self.sendRequest(params)
 
         if codenum == ANSWER_GOOD:
@@ -287,7 +294,7 @@ class GuifiAPI(object):
             raise GuifiApiError('You have to be authenticated to run this action')
 
         data = {'command': 'guifi.node.remove', 'node_id': nid}
-        params = urllib.urlencode(data)
+        params = urlencode(data)
         (codenum, response) = self.sendRequest(params)
 
         if codenum == ANSWER_GOOD:
@@ -332,7 +339,7 @@ class GuifiAPI(object):
         if notification:
             data['notification'] = notification
 
-        params = urllib.urlencode(data)
+        params = urlencode(data)
         (codenum, response) = self.sendRequest(params)
 
         if codenum == ANSWER_GOOD:
@@ -355,7 +362,7 @@ class GuifiAPI(object):
             raise GuifiApiError('You have to be authenticated to run this action')
 
         data = {'command': 'guifi.zone.update', 'zone_id': zid}
-        params = urllib.urlencode(data)
+        params = urlencode(data)
         (codenum, response) = self.sendRequest(params)
 
         if codenum == ANSWER_GOOD:
@@ -370,7 +377,7 @@ class GuifiAPI(object):
             raise GuifiApiError('You have to be authenticated to run this action')
 
         data = {'command': 'guifi.zone.remove', 'zone_id': zid}
-        params = urllib.urlencode(data)
+        params = urlencode(data)
         (codenum, response) = self.sendRequest(params)
 
         if codenum == ANSWER_GOOD:
@@ -415,7 +422,7 @@ class GuifiAPI(object):
                 raise ValueError("If rtype=='generic' you must specify mrtg_index too")
             data['mrtg_index'] = mrtg_index
 
-        params = urllib.urlencode(data)
+        params = urlencode(data)
         (codenum, response) = self.sendRequest(params)
 
         if codenum == ANSWER_GOOD:
@@ -462,7 +469,7 @@ class GuifiAPI(object):
         if mrtg_index:
             data['mrtg_index'] = mrtg_index
 
-        params = urllib.urlencode(data)
+        params = urlencode(data)
         (codenum, response) = self.sendRequest(params)
 
         if codenum == ANSWER_GOOD:
@@ -477,7 +484,7 @@ class GuifiAPI(object):
             raise GuifiApiError('You have to be authenticated to run this action')
 
         data = {'command': 'guifi.device.remove', 'device_id': did}
-        params = urllib.urlencode(data)
+        params = urlencode(data)
         (codenum, response) = self.sendRequest(params)
 
         if codenum == ANSWER_GOOD:
@@ -520,7 +527,7 @@ class GuifiAPI(object):
             print(mode)
             raise NotImplementedError
 
-        params = urllib.urlencode(data)
+        params = urlencode(data)
         (codenum, response) = self.sendRequest(params)
 
         if codenum == ANSWER_GOOD:
@@ -542,7 +549,7 @@ class GuifiAPI(object):
             raise GuifiApiError('You have to be authenticated to run this action')
 
         data = {'command': 'guifi.radio.update', 'device_id': did, 'radiodev_counter': radiodev}
-        params = urllib.urlencode(data)
+        params = urlencode(data)
         (codenum, response) = self.sendRequest(params)
 
         if codenum == ANSWER_GOOD:
@@ -557,7 +564,7 @@ class GuifiAPI(object):
             raise GuifiApiError('You have to be authenticated to run this action')
 
         data = {'command': 'guifi.radio.remove', 'device_id': did, 'radiodev_counter': radiodev}
-        params = urllib.urlencode(data)
+        params = urlencode(data)
         (codenum, response) = self.sendRequest(params)
 
         if codenum == ANSWER_GOOD:
@@ -572,7 +579,7 @@ class GuifiAPI(object):
             raise GuifiApiError('You have to be authenticated to run this action')
 
         data = {'command': 'guifi.interface.add', 'device_id': did, 'radiodev_counter': radiodev}
-        params = urllib.urlencode(data)
+        params = urlencode(data)
         (codenum, response) = self.sendRequest(params)
 
         # "responses":{"ipv4":[{"ipv4_type":"1","ipv4":"10.64.3.33","netmask":"255.255.255.224"}],"interface_id":76140}
@@ -593,7 +600,7 @@ class GuifiAPI(object):
             raise GuifiApiError('You have to be authenticated to run this action')
 
         data = {'command': 'guifi.interface.remove', 'interface_id': iid}
-        params = urllib.urlencode(data)
+        params = urlencode(data)
         (codenum, response) = self.sendRequest(params)
 
         if codenum == ANSWER_GOOD:
@@ -611,7 +618,7 @@ class GuifiAPI(object):
         data = {'command': 'guifi.link.add', 'from_device_id': fromdid,
                 'from_radiodev_counter': fromradiodev, 'to_device_id': todid,
                 'to_radiodev_counter': toradiodev}
-        params = urllib.urlencode(data)
+        params = urlencode(data)
         (codenum, response) = self.sendRequest(params)
 
         if codenum == ANSWER_GOOD:
@@ -640,7 +647,7 @@ class GuifiAPI(object):
         if routing:
             data['routing'] = routing
 
-        params = urllib.urlencode(data)
+        params = urlencode(data)
         (codenum, response) = self.sendRequest(params)
 
         if codenum == ANSWER_GOOD:
@@ -655,7 +662,7 @@ class GuifiAPI(object):
             raise GuifiApiError('You have to be authenticated to run this action')
 
         data = {'command': 'guifi.link.remove', 'link_id': lid}
-        params = urllib.urlencode(data)
+        params = urlencode(data)
         (codenum, response) = self.sendRequest(params)
 
         if codenum == ANSWER_GOOD:
@@ -673,7 +680,7 @@ class GuifiAPI(object):
         if supported:
             data['supported'] = supported
 
-        params = urllib.urlencode(data)
+        params = urlencode(data)
         (codenum, response) = self.sendRequest(params)
 
         if codenum == ANSWER_GOOD:
@@ -683,7 +690,7 @@ class GuifiAPI(object):
 
     def getManufacturers(self):
         data = {'command': 'guifi.misc.manufacturer'}
-        params = urllib.urlencode(data)
+        params = urlencode(data)
         (codenum, response) = self.sendRequest(params)
 
         if codenum == ANSWER_GOOD:
@@ -694,7 +701,7 @@ class GuifiAPI(object):
 
     def getFirmwares(self, model_id=None):
         data = {'command': 'guifi.misc.firmware', 'model_id': model_id}
-        params = urllib.urlencode(data)
+        params = urlencode(data)
         (codenum, response) = self.sendRequest(params)
 
         if codenum == ANSWER_GOOD:
@@ -705,7 +712,7 @@ class GuifiAPI(object):
 
     def getProtocols(self):
         data = {'command': 'guifi.misc.protocol'}
-        params = urllib.urlencode(data)
+        params = urlencode(data)
         (codenum, response) = self.sendRequest(params)
 
         if codenum == ANSWER_GOOD:
@@ -716,7 +723,7 @@ class GuifiAPI(object):
 
     def getChannels(self, protocol):
         data = {'command': 'guifi.misc.channel', 'protocol': protocol}
-        params = urllib.urlencode(data)
+        params = urlencode(data)
         (codenum, response) = self.sendRequest(params)
 
         if codenum == ANSWER_GOOD:
