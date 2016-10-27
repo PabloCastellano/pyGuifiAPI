@@ -1,15 +1,14 @@
 #!/usr/bin/env python
 
+import os
 import sys
 from setuptools import setup
 
-#sys.path.insert(0, 'pyGuifiAPI')
 from pyGuifiAPI import __version__ as VERSION
 if sys.argv[-1] == 'publish':
-    import os
     os.system("python setup.py sdist bdist_wheel upload -s")
     print("You probably want to also tag the version now:")
-    print("  git tag -s -a v{version} -m 'version {version}'".format(version=VERSION))
+    print("  git tag -s -a v{version}".format(version=VERSION))
     print("  git push --tags")
     sys.exit()
 
